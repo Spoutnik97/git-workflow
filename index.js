@@ -1,1 +1,11 @@
 console.log("Hello World Guigui!");
+
+// create an awesome function
+// that will be used in the workflow
+// and will be called by the workflow
+function awesomeFunction() {
+  console.log("awesome function");
+}
+
+// call the awesome function
+awesomeFunction();
