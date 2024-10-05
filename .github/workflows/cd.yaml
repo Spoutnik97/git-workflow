@@ -1,6 +1,7 @@
 name: Build and Deploy to Production
 
 on:
+  workflow_call:
   push:
     tags:
       - "git-v*"

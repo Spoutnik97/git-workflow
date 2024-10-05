@@ -13,6 +13,11 @@ on:
         options:
           - staging
           - production
+  workflow_call:
+    inputs:
+      environment:
+        required: true
+        type: string
 
 permissions:
   contents: write
@@ -29,6 +34,8 @@ jobs:
        github.event.pull_request.base.ref == 'main' &&
        (github.event.pull_request.head.ref == 'staging-release' ||
         github.event.pull_request.head.ref == 'production-release'))
+    outputs:
+      tag_created: ${{ steps.push_tags.outputs.tag_created }}
     steps:
       - name: Checkout main
         uses: actions/checkout@v4
@@ -61,4 +68,8 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.PAT_TOKEN }}
         run: |
-          git push origin --tags || echo "Push failed with exit code $?"
+          if git push origin --tags; then
+            echo "tag_created=true" >> $GITHUB_OUTPUT
+          else
+            echo "tag_created=false" >> $GITHUB_OUTPUT
+          fi
