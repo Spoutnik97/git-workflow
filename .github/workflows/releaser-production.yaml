@@ -26,6 +26,12 @@ jobs:
       - name: Create branch
         run: git checkout -b production-release
 
+      - name: Debug Info
+        run: |
+          git status
+          git log --oneline -n 5
+          ls -la ./releaser
+          pwd
       - name: Releaser
         run: ./releaser/releaser-linux production
 
