@@ -30,8 +30,12 @@ jobs:
         run: |
           git status
           git log --oneline -n 5
-          ls -la ./releaser
+          ls -la
           pwd
+      - name: Check commits
+        run: |
+          last_tag=$(git describe --tags --abbrev=0 HEAD^)
+          git diff --name-only last_tag HEAD -- .
       - name: Releaser
         run: ./releaser/releaser-linux production
 
