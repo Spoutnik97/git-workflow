@@ -1,0 +1,44 @@
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+  issues: write
+
+name: releaser-production
+jobs:
+  release:
+    name: Create the release
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Git config
+        run: git config --global user.email "github-actions[bot]@users.noreply.github.com" && git config --global user.name "github-actions[bot]"
+
+      - name: Create branch
+        run: git checkout -b production-release
+
+      - name: Releaser
+        run: ./releaser/releaser-linux production
+
+      - name: Push
+        run: |
+          git push -f origin production-release
+          PR_EXISTS=$(gh pr list --head production-release --base main --json number --jq length)
+          if [ "$PR_EXISTS" -eq "0" ]; then
+            gh pr create --title "Production Release" --body-file ./pull_request_content.md --base main --head production-release
+          else
+            echo "PR already exists. Updating..."
+            PR_NUMBER=$(gh pr list --head production-release --base main --json number --jq '.[0].number')
+            gh pr edit $PR_NUMBER --body-file ./pull_request_content.md
+          fi
+        env:
+          GITHUB_TOKEN: ${{ secrets.PAT_TOKEN }}
