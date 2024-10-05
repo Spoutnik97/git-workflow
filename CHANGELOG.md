@@ -1,4 +1,8 @@
 # git
+## Version 1.6.0
+### Features
+**tag**: run from the tag wf
+
 ## Version 1.5.0
 ### Features
 **try**: try to trigger a wf from a wf
