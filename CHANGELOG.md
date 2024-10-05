@@ -1,4 +1,8 @@
 # git
+## Version 1.5.0
+### Features
+**try**: try to trigger a wf from a wf
+
 ## Version 1.4.0
 ### Features
 **index**: feat 3
