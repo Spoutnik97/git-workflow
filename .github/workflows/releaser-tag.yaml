@@ -73,3 +73,8 @@ jobs:
           else
             echo "tag_created=false" >> $GITHUB_OUTPUT
           fi
+  trigger-cd:
+    needs: create-tag-on-merge-or-manual
+    if: needs.create-tag-on-merge-or-manual.outputs.tag_created == 'true'
+    uses: ./.github/workflows/cd.yaml
+    secrets: inherit
