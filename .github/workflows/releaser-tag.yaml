@@ -50,6 +50,7 @@ jobs:
       - name: Create tag with releaser
         run: |
           ./releaser/releaser-linux ${{ env.ENVIRONMENT }} --tag
+          git tag
 
       - name: Push tags
         env:
