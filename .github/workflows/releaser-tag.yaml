@@ -47,6 +47,11 @@ jobs:
             echo "ENVIRONMENT=production" >> $GITHUB_ENV
           fi
 
+      - name: Git config
+        run: |
+          git config user.name github-actions
+          git config user.email github-actions@github.com
+
       - name: Create tag with releaser
         run: |
           ./releaser/releaser-linux ${{ env.ENVIRONMENT }} --tag
@@ -56,6 +61,4 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.PAT_TOKEN }}
         run: |
-          git config user.name github-actions
-          git config user.email github-actions@github.com
           git push origin --tags || echo "Push failed with exit code $?"
