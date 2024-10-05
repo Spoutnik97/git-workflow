@@ -1,4 +1,8 @@
 # git
+## Version 1.4.0
+### Features
+**index**: feat 3
+
 ## Version 1.3.0
 ### Features
 **index**: feat 3
