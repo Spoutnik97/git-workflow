@@ -9,3 +9,11 @@ function awesomeFunction() {
 
 // call the awesome function
 awesomeFunction();
+
+// wirte the next function
+
+function awesomeFunction2() {
+  console.log("awesome function 2");
+}
+
+awesomeFunction2();
