@@ -1,4 +1,11 @@
 # git
+## Version 1.9.0
+### Features
+**feat**: feat
+
+### Fixes
+**release**: release
+
 ## Version 1.8.0
 ### Features
 **ci**: github release
