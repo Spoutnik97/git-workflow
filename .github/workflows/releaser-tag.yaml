@@ -109,13 +109,24 @@ jobs:
         id: get_latest_tag
         run: echo "LATEST_TAG=$(git describe --tags --abbrev=0)" >> $GITHUB_OUTPUT
 
+      - name: Get commit SHA
+        id: get_commit_sha
+        run: echo "COMMIT_SHA=$(git rev-parse HEAD)" >> $GITHUB_OUTPUT
+
+      - name: Push tag to origin
+        env:
+          GITHUB_TOKEN: ${{ secrets.PAT_TOKEN }}
+        run: |
+          git push origin --tags
+
       - name: Create Release
         env:
           GITHUB_TOKEN: ${{ secrets.PAT_TOKEN }}
         run: |
           gh release create ${{ steps.get_latest_tag.outputs.LATEST_TAG }} \
-            --title "Release ${{ steps.get_latest_tag.outputs.LATEST_TAG }}" \
-            --generate-notes
+                      --title "Release ${{ steps.get_latest_tag.outputs.LATEST_TAG }}" \
+                      --target ${{ steps.get_commit_sha.outputs.COMMIT_SHA }} \
+                      --generate-notes
 
   # trigger-cd:
   #   needs: create-tag-on-merge-or-manual
