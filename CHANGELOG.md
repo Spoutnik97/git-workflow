@@ -1,4 +1,8 @@
 # git
+## Version 1.10.2
+### Fixes
+**ci**: fix condition
+
 ## Version 1.10.1
 ### Fixes
 **ci**: condition
