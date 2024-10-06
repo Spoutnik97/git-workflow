@@ -24,24 +24,65 @@ permissions:
 
 name: releaser-tag
 jobs:
-  create-tag-on-merge-or-manual:
-    name: Create tag on main after merge or manual trigger
+  # create-tag-on-merge-or-manual:
+  #   name: Create tag on main after merge or manual trigger
+  #   runs-on: ubuntu-latest
+  #   if: |
+  #     (github.event_name == 'workflow_dispatch') ||
+  #     (github.event_name == 'pull_request' &&
+  #      github.event.pull_request.merged == true &&
+  #      github.event.pull_request.base.ref == 'main' &&
+  #      (github.event.pull_request.head.ref == 'staging-release' ||
+  #       github.event.pull_request.head.ref == 'production-release'))
+  #   outputs:
+  #     tag_created: ${{ steps.push_tags.outputs.tag_created }}
+  #   steps:
+  #     - name: Checkout main
+  #       uses: actions/checkout@v4
+  #       with:
+  #         fetch-depth: 0
+  #         ref: main
+
+  #     - name: Determine environment
+  #       id: determine_env
+  #       run: |
+  #         if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
+  #           echo "ENVIRONMENT=${{ github.event.inputs.environment }}" >> $GITHUB_ENV
+  #         elif [[ "${{ github.event.pull_request.head.ref }}" == "staging-release" ]]; then
+  #           echo "ENVIRONMENT=staging" >> $GITHUB_ENV
+  #         else
+  #           echo "ENVIRONMENT=production" >> $GITHUB_ENV
+  #         fi
+
+  #     - name: Git config
+  #       run: |
+  #         git config user.name github-actions
+  #         git config user.email github-actions@github.com
+
+  #     - name: Create tag with releaser
+  #       run: |
+  #         ./releaser/releaser-linux ${{ env.ENVIRONMENT }} --tag
+  #         git tag
+
+  #     - name: Push tags
+  #       env:
+  #         GITHUB_TOKEN: ${{ secrets.PAT_TOKEN }}
+  #       run: |
+  #         if git push origin --tags; then
+  #           echo "tag_created=true" >> $GITHUB_OUTPUT
+  #         else
+  #           echo "tag_created=false" >> $GITHUB_OUTPUT
+  #         fi
+
+  create-release:
+    # needs: create-tag-on-merge-or-manual
+    # if: needs.create-tag-on-merge-or-manual.outputs.tag_created == 'true'
     runs-on: ubuntu-latest
-    if: |
-      (github.event_name == 'workflow_dispatch') ||
-      (github.event_name == 'pull_request' &&
-       github.event.pull_request.merged == true &&
-       github.event.pull_request.base.ref == 'main' &&
-       (github.event.pull_request.head.ref == 'staging-release' ||
-        github.event.pull_request.head.ref == 'production-release'))
-    outputs:
-      tag_created: ${{ steps.push_tags.outputs.tag_created }}
     steps:
-      - name: Checkout main
+      - name: Checkout code
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
-          ref: main
 
       - name: Determine environment
         id: determine_env
@@ -64,17 +105,20 @@ jobs:
           ./releaser/releaser-linux ${{ env.ENVIRONMENT }} --tag
           git tag
 
-      - name: Push tags
+      - name: Get latest tag
+        id: get_latest_tag
+        run: echo "LATEST_TAG=$(git describe --tags --abbrev=0)" >> $GITHUB_OUTPUT
+
+      - name: Create Release
         env:
           GITHUB_TOKEN: ${{ secrets.PAT_TOKEN }}
         run: |
-          if git push origin --tags; then
-            echo "tag_created=true" >> $GITHUB_OUTPUT
-          else
-            echo "tag_created=false" >> $GITHUB_OUTPUT
-          fi
-  trigger-cd:
-    needs: create-tag-on-merge-or-manual
-    if: needs.create-tag-on-merge-or-manual.outputs.tag_created == 'true'
-    uses: ./.github/workflows/cd.yaml
-    secrets: inherit
+          gh release create ${{ steps.get_latest_tag.outputs.LATEST_TAG }} \
+            --title "Release ${{ steps.get_latest_tag.outputs.LATEST_TAG }}" \
+            --generate-notes
+
+  # trigger-cd:
+  #   needs: create-tag-on-merge-or-manual
+  #   if: needs.create-tag-on-merge-or-manual.outputs.tag_created == 'true'
+  #   uses: ./.github/workflows/cd.yaml
+  #   secrets: inherit

@@ -42,7 +42,7 @@ jobs:
           git push -f origin production-release
           PR_EXISTS=$(gh pr list --head production-release --base main --json number --jq length)
           if [ "$PR_EXISTS" -eq "0" ]; then
-            gh pr create --title "Production Release" --body-file ./pull_request_content.md --base main --head production-release
+            gh pr create --title "Production Release" --body-file ./pull_request_content.md --base main --head production-release || echo "No changes to create PR"
           else
             echo "PR already exists. Updating..."
             PR_NUMBER=$(gh pr list --head production-release --base main --json number --jq '.[0].number')
