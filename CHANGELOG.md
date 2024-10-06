@@ -1,4 +1,8 @@
 # git
+## Version 1.10.0
+### Features
+**ci**: trigger
+
 ## Version 1.9.0
 ### Features
 **feat**: feat
