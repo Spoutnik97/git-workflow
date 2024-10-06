@@ -1,4 +1,8 @@
 # git
+## Version 1.8.0
+### Features
+**ci**: github release
+
 ## Version 1.7.0
 ### Features
 **feat**: feat
