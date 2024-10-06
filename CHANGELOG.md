@@ -1,4 +1,8 @@
 # git
+## Version 1.10.1
+### Fixes
+**ci**: condition
+
 ## Version 1.10.0
 ### Features
 **ci**: trigger
