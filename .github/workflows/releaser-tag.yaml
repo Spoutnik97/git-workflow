@@ -65,6 +65,7 @@ jobs:
           git tag
 
       - name: Push tags
+        id: push_tags
         env:
           GITHUB_TOKEN: ${{ secrets.PAT_TOKEN }}
         run: |
@@ -79,6 +80,6 @@ jobs:
 
   trigger-cd:
     needs: create-tag-on-merge-or-manual
-    # if: needs.create-tag-on-merge-or-manual.outputs.tag_created == 'true'
+    if: needs.create-tag-on-merge-or-manual.outputs.tag_created == 'true'
     uses: ./.github/workflows/cd.yaml
     secrets: inherit
