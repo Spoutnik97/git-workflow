@@ -1,4 +1,8 @@
 # git
+## Version 1.7.0
+### Features
+**feat**: feat
+
 ## Version 1.6.0
 ### Features
 **index**: feat
