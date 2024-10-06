@@ -73,9 +73,12 @@ jobs:
           else
             echo "tag_created=false" >> $GITHUB_OUTPUT
           fi
+      - name: echo
+        run: |
+          echo "tag_created: ${{ steps.push_tags.outputs.tag_created }}"
 
   trigger-cd:
     needs: create-tag-on-merge-or-manual
-    if: needs.create-tag-on-merge-or-manual.outputs.tag_created == 'true'
+    # if: needs.create-tag-on-merge-or-manual.outputs.tag_created == 'true'
     uses: ./.github/workflows/cd.yaml
     secrets: inherit
