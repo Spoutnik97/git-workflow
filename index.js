@@ -19,3 +19,4 @@ function awesomeFunction2() {
 awesomeFunction2();
 console.log("Hello World Guigui!");
 console.log("Hello World Guigui!");
+console.log("hello world guigui!");
